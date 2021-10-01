@@ -29,7 +29,6 @@ public class UserClass {
     private long id;
 
     @Column(unique = true)
-
     private String email;
     @JsonIgnore
     private String password;

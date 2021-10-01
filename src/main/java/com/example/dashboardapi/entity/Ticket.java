@@ -31,4 +31,5 @@ public class Ticket {
     private Company company;
     @ManyToOne
     private Project project;
+    private int status; //1.waiting 2.finished
 }

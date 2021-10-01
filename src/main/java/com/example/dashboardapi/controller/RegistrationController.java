@@ -1,6 +1,7 @@
 package com.example.dashboardapi.controller;
 
 
+import com.example.dashboardapi.controller.utils.ShortcutUtils;
 import com.example.dashboardapi.entity.UserClass;
 import com.example.dashboardapi.error.form.ErrorForm;
 import com.example.dashboardapi.form.RegistrationForm;
@@ -25,6 +26,9 @@ public class RegistrationController extends ApiControllerV1 {
     public ResponseEntity registerUser(@Valid @RequestBody RegistrationForm user,
                                                   BindingResult result){
         URI uri= URI.create("/api/v1/hello");
+        if (ShortcutUtils.isLogged()){
+            return ResponseEntity.noContent().build();
+        }
         if (result.hasErrors()){
             ErrorForm errorForm=new ErrorForm();
             errorForm.setMessage(result.getAllErrors().get(0).getDefaultMessage());

@@ -2,6 +2,7 @@ package com.example.dashboardapi.security;
 
 import com.example.dashboardapi.security.handler.LoginSuccessHandler;
 import com.example.dashboardapi.security.user.UserDetailsClassService;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -34,10 +36,15 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/api/v1/registration/**").permitAll()
+                .antMatchers("/api/v1/**").permitAll() // temp
                 .anyRequest().authenticated()
                 .and().formLogin().successHandler(loginSuccessHandler)
+                .failureUrl("/login?error=true")
                 .and()
-                .logout().permitAll().clearAuthentication(true);
+                .logout().permitAll().clearAuthentication(true)
+                .and()
+                .sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true);
+
 
     }
 
@@ -53,6 +60,11 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
         handler.setUseReferer(true);
         return handler;
+    }
+
+    @Bean
+    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+        return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(new HttpSessionEventPublisher());
     }
 
 }
