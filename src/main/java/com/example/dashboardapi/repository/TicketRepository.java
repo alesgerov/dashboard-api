@@ -3,10 +3,12 @@ package com.example.dashboardapi.repository;
 import com.example.dashboardapi.entity.Company;
 import com.example.dashboardapi.entity.Project;
 import com.example.dashboardapi.entity.Ticket;
-import com.example.dashboardapi.form.CountForm;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
     @Query( "select count(t.id) from Ticket t  where t.company=:company" )
@@ -37,4 +39,20 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     int getCountOfAllTicketsByStatusByCompany(@Param("company") Company company,
                                      @Param("status") int status);
 
+    Optional<Ticket> findById(Long aLong);
+
+
+    @Query("select t from Ticket t  where t.company=:company ")
+    List<Ticket> findAllByCompany(@Param("company") Company company);
+
+    @Query("select t from Ticket t  where t.project=:project")
+    List<Ticket> findAllByProject(@Param("project") Project project);
+
+    @Query("select t from Ticket t  where t.project=:project and t.company=:company ")
+    List<Ticket> findAll(@Param("project") Project project,
+                                  @Param("company") Company company);
+
+
+    @Query("select t from Ticket  t where t.title like %:name% ")
+    List<Ticket> findByName(@Param("name")String name);
 }

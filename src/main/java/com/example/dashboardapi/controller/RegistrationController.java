@@ -2,8 +2,7 @@ package com.example.dashboardapi.controller;
 
 
 import com.example.dashboardapi.controller.utils.ShortcutUtils;
-import com.example.dashboardapi.entity.UserClass;
-import com.example.dashboardapi.error.form.ErrorForm;
+import com.example.dashboardapi.form.ResponseForm;
 import com.example.dashboardapi.form.RegistrationForm;
 import com.example.dashboardapi.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public class RegistrationController extends ApiControllerV1 {
             return ResponseEntity.noContent().build();
         }
         if (result.hasErrors()){
-            ErrorForm errorForm=new ErrorForm();
+            ResponseForm errorForm=new ResponseForm();
             errorForm.setMessage(result.getAllErrors().get(0).getDefaultMessage());
             errorForm.setStatus(409);
             return ResponseEntity.status(409).body(errorForm);
