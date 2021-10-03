@@ -29,7 +29,6 @@ public class Employee {
     private Project project;
     @OneToOne
     private UserClass userId;
-
     private String name;
     private String surname;
     private String fatherName;

@@ -50,7 +50,7 @@ public class CompanyService {
         company.setName(form.getName());
         company.setShortName(form.getShortName());
         company.setNoteText(form.getNoteText());
-        company=companyRepository.save(company);
+        companyRepository.save(company);
         return form;
     }
 
@@ -67,5 +67,9 @@ public class CompanyService {
 
     public List<Company> getAllCompaniesByName(String name) {
         return companyRepository.getCompaniesByName(name);
+    }
+
+    public Optional<Company> getCompanyByName(String  name){
+        return companyRepository.findByName(name);
     }
 }

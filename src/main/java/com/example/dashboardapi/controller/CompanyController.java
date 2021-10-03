@@ -39,7 +39,7 @@ public class CompanyController extends ApiControllerV1 {
     }
 
     @PostMapping(value = {"/add/company","/add/company/"})
-    public ResponseEntity<?> saveCompany(@Valid @RequestBody CompanyForm form, BindingResult result){
+    public ResponseEntity<?> addCompany(@Valid @RequestBody CompanyForm form, BindingResult result){
         if (result.hasErrors()){
             return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
         }
@@ -59,7 +59,7 @@ public class CompanyController extends ApiControllerV1 {
 
 
 
-    @GetMapping(value = {"/company/", "/companies"})
+    @GetMapping(value = {"/companies/", "/companies"})
     public ResponseEntity<?> filterCompany(@RequestParam(required = false, name = "name") String name) {
         return ResponseEntity.ok().body(companyService.getAllCompaniesByName(name));
     }
