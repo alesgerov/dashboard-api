@@ -78,7 +78,7 @@ public class FileController extends ApiControllerV1 {
         if (result.hasErrors()) {
             return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
         }else  if (optionalFile.isEmpty()){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This project does not exists.",409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This file does not exists.",409));
         }
         FileForm updated=fileService.updateFile(form,optionalFile.get());
         if (updated==null){
