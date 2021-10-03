@@ -26,6 +26,12 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public Optional<UserClass> getUserById(long id) {
+        return userRepository.findById(id);
+    }
+
+
+
 
     public UserClass saveUser(RegistrationForm form) {
         UserClass user=new UserClass();

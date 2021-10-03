@@ -7,6 +7,7 @@ import com.example.dashboardapi.form.EmployeeForm;
 import com.example.dashboardapi.form.ResponseForm;
 import com.example.dashboardapi.form.UtilForm;
 import com.example.dashboardapi.repository.EmployeeRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class EmployeeService {
             return null;
         }
 
-        employee.setUserId(userService.getCurrentUser());
+        employee.setUserId(userService.getUserById(7).get());
         employee.setCompany(utilForm.getCompany());
         employee.setProject(utilForm.getProject());
         employee.setName(form.getName());
@@ -66,7 +67,7 @@ public class EmployeeService {
 
 
     public List<Employee> getAllEmployeesByName(String name) {
-        return employeeRepository.getEmployeesByName(name);
+        return employeeRepository.getEmployeesByName(StringUtils.capitalize(name));
     }
 
 

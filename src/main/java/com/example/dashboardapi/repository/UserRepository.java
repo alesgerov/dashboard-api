@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserClass,Long> {
     Optional<UserClass> findByEmail(String email);
 
-
+    @Override
+    Optional<UserClass> findById(Long aLong);
 }
