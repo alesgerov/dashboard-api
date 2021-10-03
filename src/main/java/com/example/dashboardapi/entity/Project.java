@@ -15,7 +15,8 @@ public class Project {
     @SequenceGenerator(
             name = "project_id_seq",
             sequenceName = "project_id_seq",
-            allocationSize = 1
+            allocationSize = 1,
+            initialValue = 4
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,

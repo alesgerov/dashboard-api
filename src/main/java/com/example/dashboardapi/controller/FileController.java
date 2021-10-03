@@ -2,6 +2,7 @@ package com.example.dashboardapi.controller;
 
 import com.example.dashboardapi.controller.utils.ShortcutUtils;
 import com.example.dashboardapi.entity.File;
+import com.example.dashboardapi.entity.Project;
 import com.example.dashboardapi.form.FileForm;
 import com.example.dashboardapi.form.ProjectForm;
 import com.example.dashboardapi.service.FileService;
@@ -24,7 +25,7 @@ public class FileController extends ApiControllerV1 {
         this.shortcutUtils = shortcutUtils;
     }
 
-    @GetMapping(value = {"/files/","/files"})
+    @GetMapping(value = {"/files/"})
     public ResponseEntity<List<File>> getFiles(){
         return ResponseEntity.ok().body(fileService.getAllFiles());
     }
@@ -62,13 +63,29 @@ public class FileController extends ApiControllerV1 {
     }
 
 
-    @GetMapping(value = {"/files/", "/files"})
+    @GetMapping(value = { "/files"})
     public ResponseEntity<?> filterFile(@RequestParam(required = false, name = "name") String name) {
         return ResponseEntity.ok().body(fileService.getAllFilesByName(name));
     }
 
 
 
+
+    @PutMapping(value = {"/update/file/{id}","/update/file/{id}/"})
+    public ResponseEntity<?> updateFile(@PathVariable("id") long id,
+                                           @Valid @RequestBody FileForm form, BindingResult result){
+        Optional<File> optionalFile=fileService.getFileById(id);
+        if (result.hasErrors()) {
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
+        }else  if (optionalFile.isEmpty()){
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This project does not exists.",409));
+        }
+        FileForm updated=fileService.updateFile(form,optionalFile.get());
+        if (updated==null){
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409));
+        }
+        return ResponseEntity.status(200).body(updated);
+    }
 
 
 }

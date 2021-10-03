@@ -5,13 +5,14 @@ import lombok.Data;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class FileForm {
-    @NotBlank
+    @NotNull
     private int type;
     @NotBlank
     private String name;
-    @NotBlank
+    @NotNull
     private long ticket_id;
 }

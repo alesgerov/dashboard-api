@@ -1,11 +1,8 @@
 package com.example.dashboardapi.service;
 
-import com.example.dashboardapi.entity.Company;
 import com.example.dashboardapi.entity.File;
-import com.example.dashboardapi.entity.Project;
 import com.example.dashboardapi.entity.Ticket;
 import com.example.dashboardapi.form.FileForm;
-import com.example.dashboardapi.form.ProjectForm;
 import com.example.dashboardapi.form.ResponseForm;
 import com.example.dashboardapi.repository.FileRepository;
 import org.springframework.http.ResponseEntity;
@@ -70,7 +67,7 @@ public class FileService {
         return saveUtils(form,file);
     }
 
-    public FileForm updateProject(FileForm form,File file){
+    public FileForm updateFile(FileForm form,File file){
         return saveUtils(form,file);
     }
 

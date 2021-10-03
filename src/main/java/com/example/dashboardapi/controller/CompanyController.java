@@ -24,7 +24,7 @@ public class CompanyController extends ApiControllerV1 {
         this.shortcutUtils = shortcutUtils;
     }
 
-    @GetMapping(value = {"/companies/","/companies"})
+    @GetMapping(value = {"/companies/"})
     public ResponseEntity<List<Company>> getCompanies(){
         return ResponseEntity.ok().body(companyService.getAllCompanies());
     }
@@ -59,7 +59,7 @@ public class CompanyController extends ApiControllerV1 {
 
 
 
-    @GetMapping(value = {"/companies/", "/companies"})
+    @GetMapping(value = {"/companies"})
     public ResponseEntity<?> filterCompany(@RequestParam(required = false, name = "name") String name) {
         return ResponseEntity.ok().body(companyService.getAllCompaniesByName(name));
     }

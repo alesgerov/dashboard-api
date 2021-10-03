@@ -4,6 +4,8 @@ import com.example.dashboardapi.entity.UserClass;
 import com.example.dashboardapi.form.RegistrationForm;
 import com.example.dashboardapi.password.PasswordService;
 import com.example.dashboardapi.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,5 +37,13 @@ public class UserService {
 
     public boolean isRegistered(String email) {
         return getUserByEmail(email).isPresent();
+    }
+
+
+
+    public UserClass getCurrentUser(){
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String username=authentication.getName();
+        return getUserByEmail(username).get();
     }
 }

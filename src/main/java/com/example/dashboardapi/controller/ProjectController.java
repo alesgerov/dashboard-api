@@ -23,7 +23,7 @@ public class ProjectController extends ApiControllerV1 {
         this.shortcutUtils = shortcutUtils;
     }
 
-    @GetMapping(value = {"/projects/","/projects"})
+    @GetMapping(value = {"/projects/"})
     public ResponseEntity<List<Project>> getProjects(){
         return ResponseEntity.ok().body(projectService.getAllProjects());
     }
@@ -58,7 +58,7 @@ public class ProjectController extends ApiControllerV1 {
     }
 
 
-    @GetMapping(value = {"/projects/", "/projects"})
+    @GetMapping(value = {"/projects"})
     public ResponseEntity<?> filterProject(@RequestParam(required = false, name = "name") String name) {
         return ResponseEntity.ok().body(projectService.getAllProjectsByName(name));
     }
