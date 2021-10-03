@@ -24,7 +24,7 @@ public class CompanyService {
 
 
     public ResponseEntity<ResponseForm> deleteCompany(long id){
-        ResponseForm form=new ResponseForm("Deleted",200);
+        ResponseForm form=new ResponseForm();
         if (getCompanyById(id).isPresent()){
             companyRepository.deleteById(id);
             form.setMessage("Deleted");
