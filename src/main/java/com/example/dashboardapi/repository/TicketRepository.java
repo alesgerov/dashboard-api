@@ -54,5 +54,7 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
 
 
     @Query("select t from Ticket  t where t.title like %:name% ")
-    List<Ticket> findByName(@Param("name")String name);
+    List<Ticket> findByTitle(@Param("name")String name);
+
+    List<Ticket> findAllByStatus(int status);
 }

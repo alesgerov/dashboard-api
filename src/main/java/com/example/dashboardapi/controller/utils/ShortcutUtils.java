@@ -2,6 +2,7 @@ package com.example.dashboardapi.controller.utils;
 
 import com.example.dashboardapi.entity.Company;
 import com.example.dashboardapi.entity.Project;
+import com.example.dashboardapi.form.ResponseForm;
 import com.example.dashboardapi.form.UtilForm;
 import com.example.dashboardapi.service.CompanyService;
 import com.example.dashboardapi.service.ProjectService;
@@ -39,5 +40,9 @@ public class ShortcutUtils {
             return optionalForm;
         }
         return null;
+    }
+
+    public ResponseForm getErrorForm(String message,int status){
+        return new ResponseForm(message,status);
     }
 }

@@ -136,11 +136,18 @@ public class TicketService {
     }
 
     public List<Ticket> filterTitle(String name){
-        return repository.findByName(name);
+        return repository.findByTitle(name);
     }
 
     public List<Ticket> getAllTicket(Project project,Company company){
         return  repository.findAll(project,company);
     }
 
+    public List<Ticket> getAllTicket(){
+        return repository.findAll();
+    }
+
+    public List<Ticket> getAllByStatus(int i){
+        return repository.findAllByStatus(i);
+    }
 }

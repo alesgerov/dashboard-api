@@ -16,7 +16,8 @@ public class Company {
     @SequenceGenerator(
             name = "company_id_seq",
             sequenceName = "company_id_seq",
-            allocationSize = 1
+            allocationSize = 1,
+            initialValue = 2
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
