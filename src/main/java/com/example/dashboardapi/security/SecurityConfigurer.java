@@ -2,10 +2,8 @@ package com.example.dashboardapi.security;
 
 import com.example.dashboardapi.security.handler.LoginSuccessHandler;
 import com.example.dashboardapi.security.user.UserDetailsClassService;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -24,7 +21,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     private final UserDetailsClassService userDetailsClassService;
     private final LoginSuccessHandler loginSuccessHandler;
 
-    public SecurityConfigurer(UserDetailsClassService userDetailsClassService, LoginSuccessHandler loginSuccessHandler) {
+    public SecurityConfigurer(UserDetailsClassService userDetailsClassService, LoginSuccessHandler loginSuccessHandler
+    ) {
         this.userDetailsClassService = userDetailsClassService;
         this.loginSuccessHandler = loginSuccessHandler;
     }
@@ -40,14 +38,11 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v*/registration/**").permitAll()
                 .antMatchers("/api/v1/**").permitAll() // temp
                 .anyRequest().authenticated()
-                .and().formLogin().successHandler(loginSuccessHandler)
+                .and().formLogin()
+                .successHandler(loginSuccessHandler)
                 .failureUrl("/login?error=true")
                 .and()
-                .logout().permitAll().clearAuthentication(true)
-                .and()
-                .sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true);
-
-
+                .logout().permitAll().clearAuthentication(true);
     }
 
 
@@ -64,10 +59,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         return handler;
     }
 
-    @Bean
-    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
-        return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(new HttpSessionEventPublisher());
-    }
+//
+
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
@@ -77,6 +70,5 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(userDetailsClassService);
         return provider;
     }
-
 
 }

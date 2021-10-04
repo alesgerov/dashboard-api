@@ -26,8 +26,8 @@ public class UserClass {
             strategy = GenerationType.SEQUENCE,
             generator = "user_id_seq"
     )
+    @JsonIgnore
     private long id;
-
     @Column(unique = true)
     private String email;
     @JsonIgnore

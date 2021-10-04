@@ -2,6 +2,7 @@ package com.example.dashboardapi.form;
 
 import com.example.dashboardapi.validator.EqualFields;
 import com.example.dashboardapi.validator.UniqueEmail;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

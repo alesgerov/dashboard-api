@@ -35,4 +35,6 @@ public class RegistrationController extends ApiControllerV1 {
         return  ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
+
+
 }

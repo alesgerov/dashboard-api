@@ -11,6 +11,8 @@ import java.util.List;
 
 public class UserDetailsClass implements UserDetails {
 
+
+
     private UserClass user;
 
     public UserClass getUser() {
@@ -58,4 +60,6 @@ public class UserDetailsClass implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }
