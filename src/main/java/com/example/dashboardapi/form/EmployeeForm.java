@@ -24,4 +24,5 @@ public class EmployeeForm {
     @NotBlank(message = "Phone field cannot be null")
     private String phone;
     private String noteText;
+    private String email;
 }
