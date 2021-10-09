@@ -98,15 +98,17 @@ public class TicketService {
     }
 
     public ResponseEntity<ResponseForm> deleteTicket(long id){
-        ResponseForm form=new ResponseForm("Deleted",200);
+        ResponseForm form=new ResponseForm("Deleted",200,null);
         if (getTicketById(id).isPresent()){
             repository.deleteById(id);
             form.setMessage("Deleted");
             form.setStatus(200);
+            form.setContent("Deleted");
             return ResponseEntity.ok(form);
         }
         form.setMessage("This ticket does not exists");
         form.setStatus(409);
+        form.setContent("This ticket does not exists");
         return ResponseEntity.status(409).body(form);
     }
 

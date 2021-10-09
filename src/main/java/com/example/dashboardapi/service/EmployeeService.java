@@ -78,10 +78,12 @@ public class EmployeeService {
             employeeRepository.deleteById(id);
             form.setMessage("Deleted");
             form.setStatus(200);
+            form.setContent("Deleted");
             return ResponseEntity.ok(form);
         }
         form.setMessage("This Employee does not exists");
         form.setStatus(409);
+        form.setContent("This Employee does not exists");
         return ResponseEntity.status(409).body(form);
     }
 

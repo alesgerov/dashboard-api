@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class FileForm {
     @NotNull
     private int type;
-    @NotBlank
+    @NotBlank(message = "Name cannot be null")
     private String name;
     @NotNull
     private long ticket_id;

@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class ResponseForm {
     private String message;
     private int status;
+    private Object content;
 }

@@ -23,5 +23,4 @@ public class SampleController {
         return "Hello";
     }
 
-
 }

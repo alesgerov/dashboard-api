@@ -25,15 +25,15 @@ public class CompanyController extends ApiControllerV1 {
     }
 
     @GetMapping(value = {"/companies/"})
-    public ResponseEntity<List<Company>> getCompanies(){
-        return ResponseEntity.ok().body(companyService.getAllCompanies());
+    public ResponseEntity<?> getCompanies(){
+        return ResponseEntity.ok().body(shortcutUtils.successForm(companyService.getAllCompanies()));
     }
 
     @GetMapping(value = {"/companies/{id}","/companies/{id}/"})
     public ResponseEntity<?> getCompanyById(@PathVariable("id") long id){
         Optional<Company> optionalCompany=companyService.getCompanyById(id);
         if(optionalCompany.isPresent()){
-            return ResponseEntity.ok().body(optionalCompany.get());
+            return ResponseEntity.ok().body(shortcutUtils.successForm(optionalCompany.get()));
         }
         return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This id not found",409));
     }
@@ -41,14 +41,14 @@ public class CompanyController extends ApiControllerV1 {
     @PostMapping(value = {"/add/company","/add/company/"})
     public ResponseEntity<?> addCompany(@Valid @RequestBody CompanyForm form, BindingResult result){
         if (result.hasErrors()){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409,form));
         }
         CompanyForm companyForm=companyService.saveCompany(form);
         if (companyForm==null){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409,form));
         }
 
-        return ResponseEntity.status(201).body(companyForm);
+        return ResponseEntity.status(201).body(shortcutUtils.createdForm(companyForm));
 
     }
 
@@ -61,7 +61,7 @@ public class CompanyController extends ApiControllerV1 {
 
     @GetMapping(value = {"/companies"})
     public ResponseEntity<?> filterCompany(@RequestParam(required = false, name = "name") String name) {
-        return ResponseEntity.ok().body(companyService.getAllCompaniesByName(name));
+        return ResponseEntity.ok().body(shortcutUtils.successForm(companyService.getAllCompaniesByName(name)));
     }
 
 
@@ -71,15 +71,15 @@ public class CompanyController extends ApiControllerV1 {
                                            @Valid @RequestBody CompanyForm form,BindingResult result){
         Optional<Company> optionalCompany=companyService.getCompanyById(id);
         if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409,form));
         }else  if (optionalCompany.isEmpty()){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This company does not exists.",409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This company does not exists.",409,"Company with id "+id+" does not exists"));
         }
         CompanyForm updated=companyService.updateCompany(form,optionalCompany.get());
         if (updated==null){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409,form));
         }
-        return ResponseEntity.status(200).body(updated);
+        return ResponseEntity.status(200).body(shortcutUtils.successForm(updated));
     }
 
 

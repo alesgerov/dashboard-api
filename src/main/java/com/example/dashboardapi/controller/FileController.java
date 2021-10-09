@@ -26,8 +26,8 @@ public class FileController extends ApiControllerV1 {
     }
 
     @GetMapping(value = {"/files/"})
-    public ResponseEntity<List<File>> getFiles(){
-        return ResponseEntity.ok().body(fileService.getAllFiles());
+    public ResponseEntity<?> getFiles(){
+        return ResponseEntity.ok().body(shortcutUtils.successForm(fileService.getAllFiles()));
     }
 
 
@@ -35,9 +35,9 @@ public class FileController extends ApiControllerV1 {
     public ResponseEntity<?> getFileById(@PathVariable("id") long id){
         Optional<File> optionalFile=fileService.getFileById(id);
         if(optionalFile.isPresent()){
-            return ResponseEntity.ok().body(optionalFile.get());
+            return ResponseEntity.ok().body(shortcutUtils.successForm(optionalFile.get()));
         }
-        return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This id not found",409));
+        return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This id not found",409,"This file does not found"));
     }
 
 
@@ -45,13 +45,13 @@ public class FileController extends ApiControllerV1 {
     @PostMapping(value = {"/add/file","/add/file/"})
     public ResponseEntity<?> addFile(@Valid @RequestBody FileForm form, BindingResult result){
         if (result.hasErrors()){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409,form));
         }
         FileForm fileForm=fileService.saveFile(form);
         if (fileForm==null){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409,form));
         }
-        return ResponseEntity.status(201).body(fileForm);
+        return ResponseEntity.status(201).body(shortcutUtils.createdForm(fileForm));
 
     }
 
@@ -65,7 +65,7 @@ public class FileController extends ApiControllerV1 {
 
     @GetMapping(value = { "/files"})
     public ResponseEntity<?> filterFile(@RequestParam(required = false, name = "name") String name) {
-        return ResponseEntity.ok().body(fileService.getAllFilesByName(name));
+        return ResponseEntity.ok().body(shortcutUtils.successForm(fileService.getAllFilesByName(name)));
     }
 
 
@@ -76,15 +76,15 @@ public class FileController extends ApiControllerV1 {
                                            @Valid @RequestBody FileForm form, BindingResult result){
         Optional<File> optionalFile=fileService.getFileById(id);
         if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409,form));
         }else  if (optionalFile.isEmpty()){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This file does not exists.",409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This file does not exists.",409,form));
         }
         FileForm updated=fileService.updateFile(form,optionalFile.get());
         if (updated==null){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409,form));
         }
-        return ResponseEntity.status(200).body(updated);
+        return ResponseEntity.status(200).body(shortcutUtils.successForm(updated));
     }
 
 

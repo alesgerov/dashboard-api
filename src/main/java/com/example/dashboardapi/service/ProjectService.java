@@ -41,10 +41,12 @@ public class ProjectService {
             projectRepository.deleteById(id);
             form.setMessage("Deleted");
             form.setStatus(200);
+            form.setContent("Deleted");
             return ResponseEntity.ok(form);
         }
         form.setMessage("This Company does not exists");
         form.setStatus(409);
+        form.setContent("This Company does not exists");
         return ResponseEntity.status(409).body(form);
     }
 

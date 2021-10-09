@@ -43,6 +43,19 @@ public class ShortcutUtils {
     }
 
     public ResponseForm getErrorForm(String message,int status){
-        return new ResponseForm(message,status);
+        return new ResponseForm(message,status,null);
     }
+
+    public ResponseForm getErrorForm(String message,int status,Object content){
+        return new ResponseForm(message,status,content);
+    }
+
+    public ResponseForm successForm(Object content){
+        return new ResponseForm("Success",200,content);
+    }
+
+    public ResponseForm createdForm(Object content){
+        return new ResponseForm("Created",201,content);
+    }
+
 }

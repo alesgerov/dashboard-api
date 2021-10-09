@@ -24,8 +24,8 @@ public class ProjectController extends ApiControllerV1 {
     }
 
     @GetMapping(value = {"/projects/"})
-    public ResponseEntity<List<Project>> getProjects(){
-        return ResponseEntity.ok().body(projectService.getAllProjects());
+    public ResponseEntity<?> getProjects(){
+        return ResponseEntity.ok().body(shortcutUtils.successForm(projectService.getAllProjects()));
     }
 
 
@@ -33,22 +33,22 @@ public class ProjectController extends ApiControllerV1 {
     public ResponseEntity<?> getProjectById(@PathVariable("id") long id){
         Optional<Project> optionalProject=projectService.getProjectById(id);
         if(optionalProject.isPresent()){
-            return ResponseEntity.ok().body(optionalProject.get());
+            return ResponseEntity.ok().body(shortcutUtils.successForm(optionalProject.get()));
         }
-        return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This id not found",409));
+        return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This project does not found",409,"This project does not found"));
     }
 
 
     @PostMapping(value = {"/add/project","/add/project/"})
     public ResponseEntity<?> addProject(@Valid @RequestBody ProjectForm form, BindingResult result){
         if (result.hasErrors()){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409,form));
         }
         ProjectForm projectForm=projectService.saveProject(form);
         if (projectForm==null){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409,form));
         }
-        return ResponseEntity.status(201).body(projectForm);
+        return ResponseEntity.status(201).body(shortcutUtils.createdForm(projectForm));
 
     }
 
@@ -60,7 +60,7 @@ public class ProjectController extends ApiControllerV1 {
 
     @GetMapping(value = {"/projects"})
     public ResponseEntity<?> filterProject(@RequestParam(required = false, name = "name") String name) {
-        return ResponseEntity.ok().body(projectService.getAllProjectsByName(name));
+        return ResponseEntity.ok().body(shortcutUtils.successForm(projectService.getAllProjectsByName(name)));
     }
 
 
@@ -70,15 +70,15 @@ public class ProjectController extends ApiControllerV1 {
                                            @Valid @RequestBody ProjectForm form, BindingResult result){
         Optional<Project> optionalProject=projectService.getProjectById(id);
         if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409,form));
         }else  if (optionalProject.isEmpty()){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This project does not exists.",409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This project does not exists.",409,form));
         }
         ProjectForm updated=projectService.updateProject(form,optionalProject.get());
         if (updated==null){
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409));
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409,form));
         }
-        return ResponseEntity.status(200).body(updated);
+        return ResponseEntity.status(200).body(shortcutUtils.successForm(updated));
     }
 
 

@@ -27,12 +27,14 @@ public class CompanyService {
         ResponseForm form=new ResponseForm();
         if (getCompanyById(id).isPresent()){
             companyRepository.deleteById(id);
-            form.setMessage("Deleted");
+            form.setMessage("Success");
             form.setStatus(200);
+            form.setContent("Company deleted");
             return ResponseEntity.ok(form);
         }
         form.setMessage("This Company does not exists");
         form.setStatus(409);
+        form.setContent("This Company does not exists");
         return ResponseEntity.status(409).body(form);
     }
 

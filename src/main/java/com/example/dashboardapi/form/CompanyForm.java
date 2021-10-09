@@ -8,13 +8,13 @@ import javax.validation.constraints.Size;
 
 @Data
 public class CompanyForm {
-    @NotBlank
-    @UniqueCompanyName
+    @NotBlank(message = "Name cannot be null.")
+    @UniqueCompanyName(message = "Company name must me unique")
     private String name;
-    @NotBlank
+    @NotBlank(message = "Short name cannot be null.")
     @Size(max = 3)
     private String shortName;
-    @NotBlank
+    @NotBlank(message = "Email cannot be null")
     private String email;
     private String logo;
     private String noteText;

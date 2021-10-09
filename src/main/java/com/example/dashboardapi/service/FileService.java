@@ -33,10 +33,12 @@ public class FileService {
             fileRepository.deleteById(id);
             form.setMessage("Deleted");
             form.setStatus(200);
+            form.setContent("Deleted");
             return ResponseEntity.ok(form);
         }
         form.setMessage("This file does not exists");
         form.setStatus(409);
+        form.setContent("This file does not exists");
         return ResponseEntity.status(409).body(form);
     }
 

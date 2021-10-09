@@ -15,13 +15,13 @@ public class EmployeeForm {
     private long project_id;
     @JsonIgnore
     private UserClass userClass;
-    @NotBlank
+    @NotBlank(message = "Name cannot be null")
     private String name;
-    @NotBlank
+    @NotBlank(message = "Surname cannot be null")
     private String surname;
-    @NotBlank
+    @NotBlank(message = "Father name cannot be null")
     private String fatherName;
-    @NotBlank
+    @NotBlank(message = "Phone field cannot be null")
     private String phone;
     private String noteText;
 }

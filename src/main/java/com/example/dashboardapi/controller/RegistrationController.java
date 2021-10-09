@@ -25,16 +25,13 @@ public class RegistrationController extends ApiControllerV1 {
     @PostMapping(value = {"/registration/","/registration"})
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationForm user,
                                                   BindingResult result){
-        URI uri= URI.create("/api/v1/hello");
         if (ShortcutUtils.isLogged()){
             return ResponseEntity.noContent().build();
         }
         if (result.hasErrors()){
-            return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(),409));
+            return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(),409,user));
         }
-        return  ResponseEntity.created(uri).body(userService.saveUser(user));
+        return  ResponseEntity.status(201).body(utils.createdForm(userService.saveUser(user)));
     }
-
-
 
 }
