@@ -6,12 +6,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class FileForm {
+public class FileFormName {
     @NotNull
     private int type;
     @NotBlank(message = "Name cannot be null")
     private String name;
-    @NotNull
-    private long ticket_id;
+    @NotBlank
+    private String ticketTitle;
     private String filePlace;
+
 }

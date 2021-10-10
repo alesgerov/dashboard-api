@@ -3,7 +3,8 @@ package com.example.dashboardapi.service;
 
 import com.example.dashboardapi.controller.utils.ShortcutUtils;
 import com.example.dashboardapi.entity.Employee;
-import com.example.dashboardapi.form.EmployeeForm;
+import com.example.dashboardapi.entity.UserClass;
+import com.example.dashboardapi.form.EmployeeFormName;
 import com.example.dashboardapi.form.ResponseForm;
 import com.example.dashboardapi.form.UtilForm;
 import com.example.dashboardapi.repository.EmployeeRepository;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,16 +29,20 @@ public class EmployeeService {
     }
 
 
-    public EmployeeForm saveUtils(EmployeeForm form, Employee employee) {
+    public EmployeeFormName saveUtils(EmployeeFormName form, Employee employee) {
         if (form == null) {
             return null;
         }
-        UtilForm utilForm = utils.getOptionals(form.getCompany_id(), form.getProject_id());
+        UtilForm utilForm = utils.getOptionals(form.getCompany(), form.getProject());
         if (utilForm == null) {
             return null;
         }
 
-        employee.setUserId(userService.getUserById(7).get());
+        Optional<UserClass> userClassOptional = userService.getUserByEmail(form.getEmail());
+        if (userClassOptional.isEmpty()) {
+            return null;
+        }
+        employee.setUserId(userClassOptional.get());
         employee.setCompany(utilForm.getCompany());
         employee.setProject(utilForm.getProject());
         employee.setName(form.getName());
@@ -48,12 +54,12 @@ public class EmployeeService {
         return form;
     }
 
-    public EmployeeForm saveEmployee(EmployeeForm form) {
+    public EmployeeFormName saveEmployee(EmployeeFormName form) {
         Employee employee = new Employee();
         return saveUtils(form, employee);
     }
 
-    public EmployeeForm updateEmployee(EmployeeForm form, Employee employee) {
+    public EmployeeFormName updateEmployee(EmployeeFormName form, Employee employee) {
         return saveUtils(form, employee);
     }
 
@@ -70,11 +76,9 @@ public class EmployeeService {
         return employeeRepository.getEmployeesByName(StringUtils.capitalize(name));
     }
 
-
-
-    public ResponseEntity<ResponseForm> deleteEmployee(long id){
-        ResponseForm form=new ResponseForm();
-        if (getEmployeeById(id).isPresent()){
+    public ResponseEntity<ResponseForm> deleteEmployee(long id) {
+        ResponseForm form = new ResponseForm();
+        if (getEmployeeById(id).isPresent()) {
             employeeRepository.deleteById(id);
             form.setMessage("Deleted");
             form.setStatus(200);
@@ -85,6 +89,29 @@ public class EmployeeService {
         form.setStatus(409);
         form.setContent("This Employee does not exists");
         return ResponseEntity.status(409).body(form);
+    }
+
+    public EmployeeFormName getEmployeeForm(Employee employee) {
+        EmployeeFormName form = new EmployeeFormName();
+
+        form.setEmail(employee.getUserId().getEmail());
+        form.setCompany(employee.getCompany().getName());
+        form.setProject(employee.getProject().getName());
+        form.setName(employee.getName());
+        form.setSurname(employee.getSurname());
+        form.setFatherName(employee.getFatherName());
+        form.setPhone(employee.getPhone());
+        form.setNoteText(employee.getNoteText());
+
+        return form;
+    }
+
+    public List<EmployeeFormName> mapperToEmployeeFormName(List<Employee> employees) {
+        List<EmployeeFormName> result = new ArrayList<>();
+        for (int i = 0; i < employees.size(); i++) {
+            result.add(getEmployeeForm(employees.get(i)));
+        }
+        return result;
     }
 
 }

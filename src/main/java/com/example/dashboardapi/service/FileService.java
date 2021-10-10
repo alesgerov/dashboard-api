@@ -22,14 +22,14 @@ public class FileService {
         this.ticketService = ticketService;
     }
 
-    public Optional<File> getFileById(long id){
+    public Optional<File> getFileById(long id) {
         return fileRepository.findById(id);
     }
 
 
-    public ResponseEntity<ResponseForm> deleteFile(long id){
-        ResponseForm form=new ResponseForm();
-        if (getFileById(id).isPresent()){
+    public ResponseEntity<ResponseForm> deleteFile(long id) {
+        ResponseForm form = new ResponseForm();
+        if (getFileById(id).isPresent()) {
             fileRepository.deleteById(id);
             form.setMessage("Deleted");
             form.setStatus(200);
@@ -42,17 +42,17 @@ public class FileService {
         return ResponseEntity.status(409).body(form);
     }
 
-    public List<File> getAllFiles(){
+    public List<File> getAllFiles() {
         return fileRepository.findAll();
     }
 
 
-    public FileForm saveUtils(FileForm form, File file){
-        if (form==null){
+    public FileForm saveUtils(FileForm form, File file) {
+        if (form == null) {
             return null;
         }
-        Optional<Ticket> optionalTicket=ticketService.getTicketById(form.getTicket_id());
-        if (optionalTicket.isEmpty()){
+        Optional<Ticket> optionalTicket = ticketService.getTicketById(form.getTicket_id());
+        if (optionalTicket.isEmpty()) {
             return null;
         }
 
@@ -64,13 +64,13 @@ public class FileService {
     }
 
 
-    public FileForm saveFile(FileForm form){
-        File file=new File();
-        return saveUtils(form,file);
+    public FileForm saveFile(FileForm form) {
+        File file = new File();
+        return saveUtils(form, file);
     }
 
-    public FileForm updateFile(FileForm form,File file){
-        return saveUtils(form,file);
+    public FileForm updateFile(FileForm form, File file) {
+        return saveUtils(form, file);
     }
 
 

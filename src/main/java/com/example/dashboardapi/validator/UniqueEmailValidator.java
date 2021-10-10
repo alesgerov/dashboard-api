@@ -2,7 +2,6 @@ package com.example.dashboardapi.validator;
 
 import com.example.dashboardapi.service.UserService;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

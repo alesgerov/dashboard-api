@@ -4,7 +4,7 @@ import com.example.dashboardapi.controller.utils.ShortcutUtils;
 import com.example.dashboardapi.entity.Ticket;
 import com.example.dashboardapi.form.CountFormByStatus;
 import com.example.dashboardapi.form.ResponseForm;
-import com.example.dashboardapi.form.TicketForm;
+import com.example.dashboardapi.form.TicketFormName;
 import com.example.dashboardapi.form.UtilForm;
 import com.example.dashboardapi.service.TicketService;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -26,52 +27,51 @@ public class TicketController extends ApiControllerV1 {
         this.ticketService = ticketService;
     }
 
-    @GetMapping(value = {"/{company_id}/{project_id}/{status_id}", "/{company_id}/{project_id}/{status_id}/"})
-    public ResponseEntity<?> getStatus(@PathVariable("company_id") int company_id,
-                                    @PathVariable("project_id") int project_id,
-                                    @PathVariable("status_id") int status_id
+    @GetMapping(value = {"/{company}/{project}/{status_id}", "/{company}/{project}/{status_id}/"})
+    public ResponseEntity<?> getStatus(@PathVariable("company") String company_id,
+                                       @PathVariable("project") String project_id,
+                                       @PathVariable("status_id") int status_id
     ) {
         UtilForm utilForm = utils.getOptionals(company_id, project_id);
         if (utilForm != null) {
             CountFormByStatus form = ticketService.getTicketCountFormByStatus(status_id, utilForm.getProject(), utilForm.getCompany());
             return ResponseEntity.ok().body(utils.successForm(form));
         } else {
-            return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs",409,"Bad inputs"));
+            return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409, "Bad inputs"));
         }
-
-
     }
 
 
     @PostMapping(value = {"/add/ticket", "/add/ticket/"})
-    public ResponseEntity<?> saveTicket(@Valid @RequestBody TicketForm form, BindingResult result) {
+    public ResponseEntity<?> saveTicket(@Valid @RequestBody TicketFormName form, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409,form));
+            return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
         }
         form.setDateTime(LocalDateTime.now());
-        TicketForm form1 = ticketService.saveTicket(form);
+        TicketFormName form1 = ticketService.saveTicket(form);
 
         if (form1 == null) {
-            return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409,form));
+            return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409, form));
         }
         return ResponseEntity.status(201).body(utils.createdForm(form1));
     }
 
+
     @PutMapping(value = {"/update/ticket/{id}", "/update/ticket/{id}/"})
     public ResponseEntity<?> updateTicket(@PathVariable("id") long id,
-                                          @Valid @RequestBody TicketForm form, BindingResult result) {
+                                          @Valid @RequestBody TicketFormName form, BindingResult result) {
         Optional<Ticket> ticket = ticketService.getTicketById(id);
         if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409,form));
+            return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
         } else if (ticket.isEmpty()) {
-            return ResponseEntity.status(409).body(utils.getErrorForm("Ticket does not exist.", 409,form));
+            return ResponseEntity.status(409).body(utils.getErrorForm("Ticket does not exist.", 409, form));
         }
         form.setDateTime(LocalDateTime.now());
 
-        TicketForm form1 = ticketService.updateTicket(form, ticket.get());
+        TicketFormName form1 = ticketService.updateTicket(form, ticket.get());
 
         if (form1 == null) {
-            return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409,form));
+            return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409, form));
         }
         return ResponseEntity.status(200).body(utils.successForm(form1));
     }
@@ -84,34 +84,38 @@ public class TicketController extends ApiControllerV1 {
 
     @GetMapping(value = {"/ticket/{id}", "/ticket/{id}/"})
     public ResponseEntity<?> viewTicket(@PathVariable("id") long id) {
-        TicketForm form = ticketService.getTicketFormById(id);
+        TicketFormName form = ticketService.getTicketFormById(id);
         if (form != null) {
             return ResponseEntity.ok(utils.successForm(ticketService.getTicketFormById(id)));
         }
-        return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409,"This ticket does not exists"));
+        return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409, "This ticket does not exists"));
     }
 
 
-
-    @GetMapping(value = {"/tickets/project/{project_id}/company/{company_id}", "/tickets/project/{project_id}/company/{company_id}/"})
-    public ResponseEntity<?> getTickets(@PathVariable("project_id") long project,
-                                     @PathVariable("company_id") long company) {
+    @GetMapping(value = {"/tickets/project/{project}/company/{company}", "/tickets/project/{project}/company/{company}/"})
+    public ResponseEntity<?> getTickets(@PathVariable("project") String project,
+                                        @PathVariable("company") String company) {
         UtilForm utilForm = utils.getOptionals(company, project);
         if (utilForm != null) {
-            return ResponseEntity.ok().body(utils.successForm(ticketService.getAllTicket(utilForm.getProject(), utilForm.getCompany())));
+            List<Ticket> tickets = ticketService.getAllTicket(utilForm.getProject(), utilForm.getCompany());
+            List<TicketFormName> result = ticketService.mapperToTicketFormName(tickets);
+            return ResponseEntity.ok().body(utils.successForm(result));
         }
-        return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409,"Tickets for the company or project not found."));
+        return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409, "Tickets for the company or project not found."));
     }
-
 
 
     @GetMapping(value = {"/tickets"})
-    public ResponseEntity<?> filterTicket(@RequestParam(required = false, name = "content") String content) {
-        return ResponseEntity.ok().body(utils.successForm(utils.successForm(ticketService.filterTitle(content))));
+    public ResponseEntity<?> filterTicket(@RequestParam(required = false, name = "title") String content) {
+        List<Ticket> tickets = ticketService.filterTitle(content);
+        List<TicketFormName> ticketFormNames = ticketService.mapperToTicketFormName(tickets);
+        return ResponseEntity.ok().body(utils.successForm(ticketFormNames));
     }
 
     @GetMapping(value = {"/tickets/"})
-    public ResponseEntity<?> getAllTickets(){
-        return ResponseEntity.ok(utils.successForm(ticketService.getAllTicket()));
+    public ResponseEntity<?> getAllTickets() {
+        List<Ticket> tickets = ticketService.getAllTicket();
+        List<TicketFormName> ticketFormNames = ticketService.mapperToTicketFormName(tickets);
+        return ResponseEntity.ok(utils.successForm(ticketFormNames));
     }
 }

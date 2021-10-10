@@ -1,7 +1,6 @@
 package com.example.dashboardapi.security.user;
 
 
-import com.example.dashboardapi.controller.utils.ShortcutUtils;
 import com.example.dashboardapi.entity.UserClass;
 import com.example.dashboardapi.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,11 +22,11 @@ public class UserDetailsClassService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
-        Optional<UserClass> userClass=userService.getUserByEmail(s);
-        if (userClass.isPresent()){
-            UserClass user =userClass.get();
+        Optional<UserClass> userClass = userService.getUserByEmail(s);
+        if (userClass.isPresent()) {
+            UserClass user = userClass.get();
             return new UserDetailsClass(user);
-        }else {
+        } else {
             throw new UsernameNotFoundException("Email not found");
         }
     }

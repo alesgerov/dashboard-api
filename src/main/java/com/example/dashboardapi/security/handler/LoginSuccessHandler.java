@@ -15,9 +15,9 @@ import java.io.IOException;
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-        UserDetailsClass userPrincipal=(UserDetailsClass) authentication.getPrincipal();
-        UserClass user=userPrincipal.getUser();
-        httpServletRequest.getSession().setAttribute("user",user);
+        UserDetailsClass userPrincipal = (UserDetailsClass) authentication.getPrincipal();
+        UserClass user = userPrincipal.getUser();
+        httpServletRequest.getSession().setAttribute("user", user);
         httpServletResponse.sendRedirect("/hello");
     }
 }

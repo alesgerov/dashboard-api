@@ -25,6 +25,7 @@ public class File {
     private long id;
     private int type;
     private String name;
+    private String filePlace;
     @ManyToOne
     private Ticket ticket;
 }

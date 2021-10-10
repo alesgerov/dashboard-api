@@ -1,4 +1,5 @@
 package com.example.dashboardapi.validator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
@@ -11,7 +12,9 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {EqualFieldsValidator.class})
 public @interface EqualFields {
     String message() default "Fields are not equal";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 
     String field1();

@@ -10,34 +10,34 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface TicketRepository extends JpaRepository<Ticket,Long> {
-    @Query( "select count(t.id) from Ticket t  where t.company=:company" )
+public interface TicketRepository extends JpaRepository<Ticket, Long> {
+    @Query("select count(t.id) from Ticket t  where t.company=:company")
     int getCountOfAllTicketsByCompany(@Param("company") Company company);
 
-    @Query( "select count(t.id) from Ticket t  where t.project=:project" )
+    @Query("select count(t.id) from Ticket t  where t.project=:project")
     int getCountOfAllTicketsByProject(@Param("project") Project project);
 
-    @Query( "select count(t.id) from Ticket t  where t.project=:project and t.company=:company" )
+    @Query("select count(t.id) from Ticket t  where t.project=:project and t.company=:company")
     int getCountOfAllTicketsByProjectAndCompany(@Param("project") Project project,
-                                                  @Param("company") Company company);
+                                                @Param("company") Company company);
 
 
-    @Query( "select count(t.id) from Ticket t  where t.project=:project and t.company=:company and" +
-            " t.status=:status" )
+    @Query("select count(t.id) from Ticket t  where t.project=:project and t.company=:company and" +
+            " t.status=:status")
     int getCountOfAllTicketsByStatus(@Param("project") Project project,
                                      @Param("company") Company company,
                                      @Param("status") int status);
 
-    @Query( "select count(t.id) from Ticket t  where t.project=:project  and" +
-            " t.status=:status" )
+    @Query("select count(t.id) from Ticket t  where t.project=:project  and" +
+            " t.status=:status")
     int getCountOfAllTicketsByStatusByProject(@Param("project") Project project,
-                                     @Param("status") int status);
+                                              @Param("status") int status);
 
 
-    @Query( "select count(t.id) from Ticket t  where t.company=:company  and" +
-            " t.status=:status" )
+    @Query("select count(t.id) from Ticket t  where t.company=:company  and" +
+            " t.status=:status")
     int getCountOfAllTicketsByStatusByCompany(@Param("company") Company company,
-                                     @Param("status") int status);
+                                              @Param("status") int status);
 
     Optional<Ticket> findById(Long aLong);
 
@@ -50,11 +50,13 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
 
     @Query("select t from Ticket t  where t.project=:project and t.company=:company ")
     List<Ticket> findAll(@Param("project") Project project,
-                                  @Param("company") Company company);
+                         @Param("company") Company company);
 
 
     @Query("select t from Ticket  t where t.title like %:name% ")
-    List<Ticket> findByTitle(@Param("name")String name);
+    List<Ticket> findTicketsByTitle(@Param("name") String name);
 
     List<Ticket> findAllByStatus(int status);
+
+    Optional<Ticket> findByTitle(String title);
 }

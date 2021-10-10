@@ -18,14 +18,14 @@ public class CompanyService {
         this.companyRepository = companyRepository;
     }
 
-    public Optional<Company> getCompanyById(long id){
+    public Optional<Company> getCompanyById(long id) {
         return companyRepository.findById(id);
     }
 
 
-    public ResponseEntity<ResponseForm> deleteCompany(long id){
-        ResponseForm form=new ResponseForm();
-        if (getCompanyById(id).isPresent()){
+    public ResponseEntity<ResponseForm> deleteCompany(long id) {
+        ResponseForm form = new ResponseForm();
+        if (getCompanyById(id).isPresent()) {
             companyRepository.deleteById(id);
             form.setMessage("Success");
             form.setStatus(200);
@@ -38,13 +38,13 @@ public class CompanyService {
         return ResponseEntity.status(409).body(form);
     }
 
-    public List<Company> getAllCompanies(){
+    public List<Company> getAllCompanies() {
         return companyRepository.findAll();
     }
 
 
-    public CompanyForm saveUtils(CompanyForm form,Company company){
-        if (form==null){
+    public CompanyForm saveUtils(CompanyForm form, Company company) {
+        if (form == null) {
             return null;
         }
         company.setEmail(form.getEmail());
@@ -57,13 +57,13 @@ public class CompanyService {
     }
 
 
-    public CompanyForm saveCompany(CompanyForm form){
-        Company company=new Company();
-        return saveUtils(form,company);
+    public CompanyForm saveCompany(CompanyForm form) {
+        Company company = new Company();
+        return saveUtils(form, company);
     }
 
-    public CompanyForm updateCompany(CompanyForm form,Company company){
-        return saveUtils(form,company);
+    public CompanyForm updateCompany(CompanyForm form, Company company) {
+        return saveUtils(form, company);
     }
 
 
@@ -71,7 +71,7 @@ public class CompanyService {
         return companyRepository.getCompaniesByName(name);
     }
 
-    public Optional<Company> getCompanyByName(String  name){
+    public Optional<Company> getCompanyByName(String name) {
         return companyRepository.findByName(name);
     }
 }

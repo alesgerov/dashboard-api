@@ -12,15 +12,14 @@ import java.util.List;
 public class UserDetailsClass implements UserDetails {
 
 
-
     private UserClass user;
-
-    public UserClass getUser() {
-        return user;
-    }
 
     public UserDetailsClass(UserClass user) {
         this.user = user;
+    }
+
+    public UserClass getUser() {
+        return user;
     }
 
     @Override

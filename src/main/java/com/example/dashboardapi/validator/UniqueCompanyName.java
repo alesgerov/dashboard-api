@@ -11,7 +11,7 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
 
 @Constraint(validatedBy = CompanyNameValidator.class)
-@Target({ FIELD, PARAMETER })
+@Target({FIELD, PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface UniqueCompanyName {

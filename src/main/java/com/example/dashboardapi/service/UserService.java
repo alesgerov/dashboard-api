@@ -31,11 +31,16 @@ public class UserService {
     }
 
 
-
-
     public UserClass saveUser(RegistrationForm form) {
-        UserClass user=new UserClass();
-        String  hashedPw=passwordService.hashPassword(form.getPassword());
+        UserClass user = new UserClass();
+        String hashedPw = passwordService.hashPassword(form.getPassword());
+        user.setEmail(form.getEmail());
+        user.setPassword(hashedPw);
+        return userRepository.save(user);
+    }
+
+    public UserClass updateUser(UserClass user, RegistrationForm form) {
+        String hashedPw = passwordService.hashPassword(form.getPassword());
         user.setEmail(form.getEmail());
         user.setPassword(hashedPw);
         return userRepository.save(user);
@@ -46,10 +51,9 @@ public class UserService {
     }
 
 
-
-    public UserClass getCurrentUser(){
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        String username=authentication.getName();
+    public UserClass getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         return getUserByEmail(username).get();
     }
 }

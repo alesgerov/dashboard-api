@@ -10,16 +10,14 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
 
-@Constraint(validatedBy = UniqueEmailValidator.class)
+@Constraint(validatedBy = ProjectNameValidator.class)
 @Target({FIELD, PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface UniqueEmail {
-
-    String message() default "Email is already registered";
+public @interface UniqueProjectName {
+    String message() default "This project has been registered.";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }
