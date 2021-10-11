@@ -9,6 +9,7 @@ import com.example.dashboardapi.form.UtilForm;
 import com.example.dashboardapi.service.TicketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -61,10 +62,16 @@ public class TicketController extends ApiControllerV1 {
     public ResponseEntity<?> updateTicket(@PathVariable("id") long id,
                                           @Valid @RequestBody TicketFormName form, BindingResult result) {
         Optional<Ticket> ticket = ticketService.getTicketById(id);
+        if (ticket.isEmpty()) {
+            return ResponseEntity.status(409).body(utils.getErrorForm("This company does not exists.", 409, form));
+        }
         if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-        } else if (ticket.isEmpty()) {
-            return ResponseEntity.status(409).body(utils.getErrorForm("Ticket does not exist.", 409, form));
+            if (!ticket.get().getTitle().equals(form.getTitle())) {
+                return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
+            }else if (ticket.get().getTitle().equals(form.getTitle()) && result.getErrorCount()>1){
+                List<ObjectError> errors=utils.reNewErrors(result,"name");
+                return ResponseEntity.status(409).body(utils.getErrorForm(errors.get(0).getDefaultMessage(),409,form));
+            }
         }
         form.setDateTime(LocalDateTime.now());
 

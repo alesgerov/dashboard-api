@@ -1,10 +1,12 @@
 package com.example.dashboardapi.form;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
+@ToString
 public class EmployeeFormName {
     @NotBlank
     private String company;

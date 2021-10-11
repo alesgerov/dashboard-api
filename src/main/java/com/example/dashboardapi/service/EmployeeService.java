@@ -38,11 +38,11 @@ public class EmployeeService {
             return null;
         }
 
-        Optional<UserClass> userClassOptional = userService.getUserByEmail(form.getEmail());
-        if (userClassOptional.isEmpty()) {
-            return null;
-        }
-        employee.setUserId(userClassOptional.get());
+//        Optional<UserClass> userClassOptional = userService.getUserByEmail(form.getEmail());
+//        if (userClassOptional.isEmpty()) {
+//            return null;
+//        }
+        employee.setUserId(employee.getUserId());
         employee.setCompany(utilForm.getCompany());
         employee.setProject(utilForm.getProject());
         employee.setName(form.getName());

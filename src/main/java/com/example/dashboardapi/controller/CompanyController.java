@@ -7,9 +7,11 @@ import com.example.dashboardapi.form.CompanyForm;
 import com.example.dashboardapi.service.CompanyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -62,15 +64,21 @@ public class CompanyController extends ApiControllerV1 {
         return ResponseEntity.ok().body(shortcutUtils.successForm(companyService.getAllCompaniesByName(name)));
     }
 
-
     @PutMapping(value = {"/update/company/{id}", "/update/company/{id}/"})
     public ResponseEntity<?> updateCompany(@PathVariable("id") long id,
-                                           @Valid @RequestBody CompanyForm form, BindingResult result) {
+                                           @Valid @RequestBody CompanyForm form,
+                                           BindingResult result) {
         Optional<Company> optionalCompany = companyService.getCompanyById(id);
+        if (optionalCompany.isEmpty()) {
+            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This company does not exists.", 409, form));
+        }
         if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-        } else if (optionalCompany.isEmpty()) {
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This company does not exists.", 409, "Company with id " + id + " does not exists"));
+            if (!optionalCompany.get().getName().equals(form.getName())) {
+                return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
+            }else if (optionalCompany.get().getName().equals(form.getName()) && result.getErrorCount()>1){
+                List<ObjectError> errors=shortcutUtils.reNewErrors(result,"name");
+                return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(errors.get(0).getDefaultMessage(),409,form));
+            }
         }
         CompanyForm updated = companyService.updateCompany(form, optionalCompany.get());
         if (updated == null) {

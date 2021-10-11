@@ -6,6 +6,7 @@ import com.example.dashboardapi.form.ProjectFormName;
 import com.example.dashboardapi.service.ProjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -72,11 +73,18 @@ public class ProjectController extends ApiControllerV1 {
     public ResponseEntity<?> updateProject(@PathVariable("id") long id,
                                            @Valid @RequestBody ProjectFormName form, BindingResult result) {
         Optional<Project> optionalProject = projectService.getProjectById(id);
-        if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-        } else if (optionalProject.isEmpty()) {
+        if (optionalProject.isEmpty()) {
             return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This project does not exists.", 409, form));
         }
+        if (result.hasErrors()) {
+            if (!optionalProject.get().getName().equals(form.getName())) {
+                return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
+            }else if (optionalProject.get().getName().equals(form.getName()) && result.getErrorCount()>1){
+                List<ObjectError> errors=shortcutUtils.reNewErrors(result,"name");
+                return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(errors.get(0).getDefaultMessage(),409,form));
+            }
+        }
+
         ProjectFormName updated = projectService.updateProject(form, optionalProject.get());
         if (updated == null) {
             return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409, form));

@@ -13,14 +13,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 
 @RestController
-public class RegistrationController extends ApiControllerV1 {
+public class RegistrationController extends ApiControllerV1 implements ApiControllerV2{
 
     private final UserService userService;
     private final EmployeeService employeeService;
@@ -67,21 +69,35 @@ public class RegistrationController extends ApiControllerV1 {
                                             @Valid @RequestBody RequestForm form,
                                             BindingResult result) {
         Optional<Employee> optionalEmployee = employeeService.getEmployeeById(id);
-        if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-        }
+
         if (optionalEmployee.isEmpty()) {
-            return ResponseEntity.status(409).body(utils.getErrorForm("This employee does not exists.", 409, form));
+            return ResponseEntity.status(409).body(utils.getErrorForm("This project does not exists.", 409, form));
         }
         UserClass user = optionalEmployee.get().getUserId();
+        System.out.println(user.getEmail());
+        if (result.hasErrors()) {
+            if (!user.getEmail().equals(form.getRegistrationForm().getEmail())) {
+                return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
+            }else if (user.getEmail().equals(form.getRegistrationForm().getEmail()) && result.getErrorCount()>1){
+                List<ObjectError> errors=utils.reNewErrors(result,"registrationForm.email");
+                return ResponseEntity.status(409).body(utils.getErrorForm(errors.get(0).getDefaultMessage(),409,form));
+            }
+        }
         UserClass userClass = userService.updateUser(user, form.getRegistrationForm());
+        System.out.println(userClass);
         if (userClass != null) {
             EmployeeFormName updated = employeeService.updateEmployee(form.getEmployeeForm(), optionalEmployee.get());
+            System.out.println(updated);
             if (updated != null) {
                 return ResponseEntity.status(200).body(utils.successForm(updated));
             }
         }
         return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409, form));
+    }
+
+    @GetMapping("/smt")
+    public ResponseEntity<?> emp(){
+        return  ResponseEntity.ok(new RequestForm(new RegistrationForm(),new EmployeeFormName()));
     }
 }
 

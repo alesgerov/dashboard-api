@@ -4,6 +4,7 @@ package com.example.dashboardapi.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Transactional
+@ToString
 public class UserClass {
 
     @Id

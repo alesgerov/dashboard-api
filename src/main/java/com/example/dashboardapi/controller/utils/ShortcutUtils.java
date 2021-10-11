@@ -10,8 +10,15 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class ShortcutUtils {
@@ -70,4 +77,19 @@ public class ShortcutUtils {
         return new ResponseForm("Created", 201, content);
     }
 
+    public List<ObjectError> reNewErrors(BindingResult result,String fieldName){
+        List<FieldError> errors = result.getFieldErrors();
+        List<FieldError> resultList=new ArrayList<>();
+        for (int i = 0; i < errors.size(); i++) {
+            if (!errors.get(i).getField().equals(fieldName)){
+                resultList.add(errors.get(i));
+            }
+        }
+
+        List<ObjectError> objectErrors = new ArrayList<>(resultList);
+//        for (FieldError fieldError : errors) {
+//            result.addError(fieldError);
+//        }
+        return objectErrors;
+    }
 }
