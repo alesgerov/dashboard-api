@@ -174,7 +174,7 @@ public class TicketService {
         return formNames;
     }
 
-    public Optional<Ticket>  getTicketByTitle(String title){
+    public Optional<Ticket> getTicketByTitle(String title) {
         return repository.findByTitle(title);
     }
 }

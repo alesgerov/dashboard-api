@@ -22,11 +22,12 @@ import java.util.Optional;
 
 
 @RestController
-public class RegistrationController extends ApiControllerV1 implements ApiControllerV2{
+public class RegistrationController extends ApiControllerV1 {
 
     private final UserService userService;
     private final EmployeeService employeeService;
     private final ShortcutUtils utils;
+
     public RegistrationController(UserService userService, EmployeeService employeeService, ShortcutUtils utils) {
         this.userService = userService;
         this.employeeService = employeeService;
@@ -78,9 +79,9 @@ public class RegistrationController extends ApiControllerV1 implements ApiContro
         if (result.hasErrors()) {
             if (!user.getEmail().equals(form.getRegistrationForm().getEmail())) {
                 return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-            }else if (user.getEmail().equals(form.getRegistrationForm().getEmail()) && result.getErrorCount()>1){
-                List<ObjectError> errors=utils.reNewErrors(result,"registrationForm.email");
-                return ResponseEntity.status(409).body(utils.getErrorForm(errors.get(0).getDefaultMessage(),409,form));
+            } else if (user.getEmail().equals(form.getRegistrationForm().getEmail()) && result.getErrorCount() > 1) {
+                List<ObjectError> errors = utils.reNewErrors(result, "registrationForm.email");
+                return ResponseEntity.status(409).body(utils.getErrorForm(errors.get(0).getDefaultMessage(), 409, form));
             }
         }
         UserClass userClass = userService.updateUser(user, form.getRegistrationForm());
@@ -95,10 +96,7 @@ public class RegistrationController extends ApiControllerV1 implements ApiContro
         return ResponseEntity.status(409).body(utils.getErrorForm("Bad inputs", 409, form));
     }
 
-    @GetMapping("/smt")
-    public ResponseEntity<?> emp(){
-        return  ResponseEntity.ok(new RequestForm(new RegistrationForm(),new EmployeeFormName()));
-    }
+
 }
 
 @Data

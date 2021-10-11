@@ -68,9 +68,9 @@ public class TicketController extends ApiControllerV1 {
         if (result.hasErrors()) {
             if (!ticket.get().getTitle().equals(form.getTitle())) {
                 return ResponseEntity.status(409).body(utils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-            }else if (ticket.get().getTitle().equals(form.getTitle()) && result.getErrorCount()>1){
-                List<ObjectError> errors=utils.reNewErrors(result,"name");
-                return ResponseEntity.status(409).body(utils.getErrorForm(errors.get(0).getDefaultMessage(),409,form));
+            } else if (ticket.get().getTitle().equals(form.getTitle()) && result.getErrorCount() > 1) {
+                List<ObjectError> errors = utils.reNewErrors(result, "name");
+                return ResponseEntity.status(409).body(utils.getErrorForm(errors.get(0).getDefaultMessage(), 409, form));
             }
         }
         form.setDateTime(LocalDateTime.now());

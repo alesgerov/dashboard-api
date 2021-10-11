@@ -75,9 +75,9 @@ public class CompanyController extends ApiControllerV1 {
         if (result.hasErrors()) {
             if (!optionalCompany.get().getName().equals(form.getName())) {
                 return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-            }else if (optionalCompany.get().getName().equals(form.getName()) && result.getErrorCount()>1){
-                List<ObjectError> errors=shortcutUtils.reNewErrors(result,"name");
-                return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(errors.get(0).getDefaultMessage(),409,form));
+            } else if (optionalCompany.get().getName().equals(form.getName()) && result.getErrorCount() > 1) {
+                List<ObjectError> errors = shortcutUtils.reNewErrors(result, "name");
+                return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(errors.get(0).getDefaultMessage(), 409, form));
             }
         }
         CompanyForm updated = companyService.updateCompany(form, optionalCompany.get());

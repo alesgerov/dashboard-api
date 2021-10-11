@@ -79,9 +79,9 @@ public class ProjectController extends ApiControllerV1 {
         if (result.hasErrors()) {
             if (!optionalProject.get().getName().equals(form.getName())) {
                 return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-            }else if (optionalProject.get().getName().equals(form.getName()) && result.getErrorCount()>1){
-                List<ObjectError> errors=shortcutUtils.reNewErrors(result,"name");
-                return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(errors.get(0).getDefaultMessage(),409,form));
+            } else if (optionalProject.get().getName().equals(form.getName()) && result.getErrorCount() > 1) {
+                List<ObjectError> errors = shortcutUtils.reNewErrors(result, "name");
+                return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(errors.get(0).getDefaultMessage(), 409, form));
             }
         }
 

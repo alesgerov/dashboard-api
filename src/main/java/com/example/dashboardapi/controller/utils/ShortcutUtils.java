@@ -77,11 +77,11 @@ public class ShortcutUtils {
         return new ResponseForm("Created", 201, content);
     }
 
-    public List<ObjectError> reNewErrors(BindingResult result,String fieldName){
+    public List<ObjectError> reNewErrors(BindingResult result, String fieldName) {
         List<FieldError> errors = result.getFieldErrors();
-        List<FieldError> resultList=new ArrayList<>();
+        List<FieldError> resultList = new ArrayList<>();
         for (int i = 0; i < errors.size(); i++) {
-            if (!errors.get(i).getField().equals(fieldName)){
+            if (!errors.get(i).getField().equals(fieldName)) {
                 resultList.add(errors.get(i));
             }
         }
