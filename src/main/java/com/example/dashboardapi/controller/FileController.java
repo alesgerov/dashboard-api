@@ -4,11 +4,13 @@ import com.example.dashboardapi.controller.utils.ShortcutUtils;
 import com.example.dashboardapi.entity.File;
 import com.example.dashboardapi.form.FileFormName;
 import com.example.dashboardapi.service.FileService;
+import com.example.dashboardapi.service.UploadService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class FileController extends ApiControllerV1 {
 
     private final FileService fileService;
+    private final UploadService uploadService;
     private final ShortcutUtils shortcutUtils;
 
-    public FileController(FileService fileService, ShortcutUtils shortcutUtils) {
+    public FileController(FileService fileService, UploadService uploadService, ShortcutUtils shortcutUtils) {
         this.fileService = fileService;
+        this.uploadService = uploadService;
         this.shortcutUtils = shortcutUtils;
     }
 
@@ -40,12 +44,17 @@ public class FileController extends ApiControllerV1 {
     }
 
 
+
+
     @PostMapping(value = {"/add/file", "/add/file/"})
-    public ResponseEntity<?> addFile(@Valid @RequestBody FileFormName form, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-        }
-        FileFormName fileForm = fileService.saveFile(form);
+    public ResponseEntity<?> addFile(@RequestParam("type") int type,
+                                     @RequestParam("name") String name,
+                                     @RequestParam("ticketTitle") String ticketTitle,
+                                     @RequestParam("file") MultipartFile file)
+            throws IOException {
+        FileFormName form=new FileFormName(type,name,ticketTitle);
+
+        FileFormName fileForm = uploadService.saveFile(file, form);
         if (fileForm == null) {
             return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409, form));
         }
@@ -69,14 +78,17 @@ public class FileController extends ApiControllerV1 {
 
     @PutMapping(value = {"/update/file/{id}", "/update/file/{id}/"})
     public ResponseEntity<?> updateFile(@PathVariable("id") long id,
-                                        @Valid @RequestBody FileFormName form, BindingResult result) {
+                                        @RequestParam("type") int type,
+                                        @RequestParam("name") String name,
+                                        @RequestParam("ticketTitle") String ticketTitle,
+                                        @RequestParam("file") MultipartFile file
+                                        ) {
         Optional<File> optionalFile = fileService.getFileById(id);
-        if (result.hasErrors()) {
-            return ResponseEntity.status(409).body(shortcutUtils.getErrorForm(result.getAllErrors().get(0).getDefaultMessage(), 409, form));
-        } else if (optionalFile.isEmpty()) {
+        FileFormName form=new FileFormName(type,name,ticketTitle);
+        if (optionalFile.isEmpty()) {
             return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("This file does not exists.", 409, form));
         }
-        FileFormName updated = fileService.updateFile(form, optionalFile.get());
+        FileFormName updated = uploadService.updateFile(file,form,optionalFile.get());
         if (updated == null) {
             return ResponseEntity.status(409).body(shortcutUtils.getErrorForm("Bad inputs", 409, form));
         }

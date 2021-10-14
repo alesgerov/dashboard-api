@@ -19,5 +19,4 @@ public interface FileRepository extends JpaRepository<File, Long> {
     List<File> findFilesByType(int type);
 
     List<File> findFilesByTicket(Ticket ticket);
-
 }

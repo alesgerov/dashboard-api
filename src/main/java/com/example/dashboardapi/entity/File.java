@@ -28,4 +28,5 @@ public class File {
     private String filePlace;
     @ManyToOne
     private Ticket ticket;
+    private String documentFormat;
 }

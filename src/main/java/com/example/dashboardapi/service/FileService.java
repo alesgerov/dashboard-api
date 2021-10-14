@@ -97,4 +97,11 @@ public class FileService {
         }
         return formNames;
     }
+
+    public List<File> getFilesByTicket(String ticket){
+        Optional<Ticket> ticketOptional=ticketService.getTicketByTitle(ticket);
+        if (ticketOptional.isEmpty()) return null;
+        return  fileRepository.findFilesByTicket(ticketOptional.get());
+    }
+
 }
